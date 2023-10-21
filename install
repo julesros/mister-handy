@@ -3,7 +3,7 @@
 LOG="${HOME}/Library/Logs/dotfiles.log"
 GITHUB_USER="julesros"
 GITHUB_REPO="that_is_my_shit"
-DIR="/usr/local/opt/${GITHUB_REPO}"
+DIR="/opt/${GITHUB_REPO}"
 
 _process() {
   echo "$(date) PROCESSING:  $@" >> $LOG
