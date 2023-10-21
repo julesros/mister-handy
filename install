@@ -16,6 +16,23 @@ _success() {
 }
 
 download_dotfiles() {
+  _process "→ Creating directory at ${DIR} and setting permissions"
+  # Ask for sudo privileges
+  _process "Please enter your sudo password:"
+  sudo -v
+  # Check if sudo was successful
+  if [ $? -eq 0 ]; then
+      # Run the first command with sudo
+      sudo mkdir -p "${DIR}"
+      sudo chown $USER:admin "${DIR}"
+
+      # Release sudo privileges
+      sudo -k
+  else
+    _process "Sudo authentication failed. Exiting."
+    exit 1
+  fi
+
 
   _process "→ Downloading repository to /tmp directory"
   curl -#fLo /tmp/${GITHUB_REPO}.tar.gz "https://github.com/${GITHUB_USER}/${GITHUB_REPO}/tarball/main"
