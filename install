@@ -3,6 +3,8 @@
 LOG="${HOME}/Library/Logs/dotfiles.log"
 GITHUB_USER="julesros"
 GITHUB_REPO="that_is_my_shit"
+USER_GIT_AUTHOR_NAME: $USER_GIT_AUTHOR_NAME 
+USER_GIT_AUTHOR_EMAIL: $USER_GIT_AUTHOR_EMAIL
 DIR="/opt/${GITHUB_REPO}"
 
 _process() {
@@ -13,6 +15,11 @@ _process() {
 _success() {
   local message=$1
   printf "%s✓ Success:%s\n" "$(tput setaf 2)" "$(tput sgr0) $message"
+}
+
+_warning() {
+  echo "$(date) WARNING:  $@" >> $LOG
+  printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
 }
 
 download_dotfiles() {
@@ -74,6 +81,14 @@ link_dotfiles() {
         IFS=$' '
         # create an array of line items
         file=(${links[$index]})
+
+        # Check if the file exists in the HOME directory
+        if [[ -e "${HOME}/${file[1]}" ]]; then
+          # Backup the existing file with a .bak suffix
+          mv "${HOME}/${file[1]}" "${HOME}/${file[1]}.bak"
+          _process "→ Moved existing ${file[1]} to ${file[1]}.bak"
+        fi
+
         # Create symbolic link
         ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
       done
@@ -84,15 +99,106 @@ link_dotfiles() {
     # Reset IFS back
     IFS=$OIFS
 
-    source "${HOME}/.bash_profile"
+    # source "${HOME}/.bash_profile"
 
     [[ $? ]] && _success "All files have been copied"
   fi
 }
 
+install_homebrew() {
+  _process "→ Installing Homebrew"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+  _process "→ Running brew doctor"
+  brew doctor
+  [[ $? ]] \
+  && _success "Installed Homebrew"
+}
+
+install_formulae() {
+  if ! type -P 'brew' &> /dev/null; then
+    _error "Homebrew not found"
+  else
+    _process "→ Installing Homebrew packages"
+
+    # Set variable for list of homebrew formulaes
+    brews="${DIR}/opt/homebrew"
+
+    # Update and upgrade all packages
+    _process "→ Updating and upgrading Homebrew packages"
+    brew update
+    brew upgrade
+
+    # Tap some necessary formulae
+    brew tap homebrew/core
+
+    # Store IFS within a temp variable
+    OIFS=$IFS
+
+    # Set the separator to a carriage return & a new line break
+    # read in passed-in file and store as an array
+    IFS=$'\r\n' formulae=($(cat "${brews}"))
+
+    # Loop through split list of formulae
+    _process "→ Checking status of desired Homebrew formulae"
+    for index in ${!formulae[*]}
+    do
+      # Test whether a Homebrew formula is already installed
+      if ! brew list ${formulae[$index]} &> /dev/null; then
+        brew install ${formulae[$index]}
+      fi
+    done
+
+    # Reset IFS back
+    IFS=$OIFS
+
+    brew cleanup
+
+    [[ $? ]] && _success "All Homebrew packages installed and updated"
+  fi
+}
+
+# WIP
+install_node() {
+  brew install nvm
+  echo -n 'source $(brew --prefix nvm)/nvm.sh' >> ~/.zshrc
+  source "${HOME}/.zshrc"
+}
+
+# /install
+setup_git_authorship() {
+  GIT_AUTHOR_NAME=eval "git config user.name"
+  GIT_AUTHOR_EMAIL=eval "git config user.email"
+
+  if [[ ! -z "$GIT_AUTHOR_NAME" ]]; then
+    _process "→ Setting up Git author"
+
+    read USER_GIT_AUTHOR_NAME
+    if [[ ! -z "$USER_GIT_AUTHOR_NAME" ]]; then
+      GIT_AUTHOR_NAME="${USER_GIT_AUTHOR_NAME}"
+      $(git config --global user.name "$GIT_AUTHOR_NAME")
+    else
+      _warning "No Git user name has been set.  Please update manually"
+    fi
+
+    read USER_GIT_AUTHOR_EMAIL
+    if [[ ! -z "$USER_GIT_AUTHOR_EMAIL" ]]; then
+      GIT_AUTHOR_EMAIL="${USER_GIT_AUTHOR_EMAIL}"
+      $(git config --global user.email "$GIT_AUTHOR_EMAIL")
+    else
+      _warning "No Git user email has been set.  Please update manually"
+    fi
+  else
+    _process "→ Git author already set, moving on..."
+  fi
+}
+
 install() {
+  install_homebrew
+  install_formulae
   download_dotfiles
   link_dotfiles
+  setup_git_authorship
 }
 
 install

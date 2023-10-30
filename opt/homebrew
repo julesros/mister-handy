@@ -1,0 +1,14 @@
+rbenv
+shared-mime-info
+libpq
+fzf
+gh
+nvm
+gpg
+yarn
+openssl
+openssl@1.1
+awscli
+derailed/k9s/k9s
+postgresql
+redis
