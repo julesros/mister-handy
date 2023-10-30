@@ -1,4 +1,5 @@
 rbenv
+ruby-build
 shared-mime-info
 libpq
 fzf
