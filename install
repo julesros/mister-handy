@@ -3,7 +3,7 @@
 LOG="${HOME}/Library/Logs/dotfiles.log"
 GITHUB_USER="julesros"
 GITHUB_REPO="that_is_my_shit"
-USER_GIT_AUTHOR_NAME: $USER_GIT_AUTHOR_NAME 
+USER_GIT_AUTHOR_NAME: $USER_GIT_AUTHOR_NAME
 USER_GIT_AUTHOR_EMAIL: $USER_GIT_AUTHOR_EMAIL
 DIR="/opt/${GITHUB_REPO}"
 
@@ -119,6 +119,25 @@ install_homebrew() {
   fi
 }
 
+install_tap_casks() {
+  if ! type -P 'brew' &> /dev/null; then
+    _error "Homebrew not found"
+  else
+    _process "→ Installing Homebrew (casks)"
+
+    # Update and upgrade all packages
+    _process "→ Updating and upgrading Homebrew packages"
+    brew update
+    brew upgrade
+
+    brew list visual-studio-code || brew install --cask visual-studio-code
+
+    brew cleanup
+
+    [[ $? ]] && _success "All Homebrew casks packages installed and updated"
+  fi
+}
+
 install_formulae() {
   if ! type -P 'brew' &> /dev/null; then
     _error "Homebrew not found"
@@ -199,6 +218,7 @@ setup_git_authorship() {
 
 install() {
   install_homebrew
+  install_tap_casks
   install_formulae
   download_dotfiles
   link_dotfiles
