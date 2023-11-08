@@ -2,6 +2,8 @@
 call plug#begin()
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'tpope/vim-commentary'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 " Turn backup off, since most stuff is in SVN, git et.c anyway...
@@ -39,3 +41,8 @@ set tabstop=2    " spaces per tab
 set expandtab    " always use spaces instead of tabs
 set smarttab     " <tab>
 
+" navigation
+set mouse=a
+
+" golang
+:set completeopt=longest,menuone
