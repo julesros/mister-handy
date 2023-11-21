@@ -186,7 +186,7 @@ install_formulae() {
 
 install_node() {
   brew list nvm || brew install nvm
-  source "${HOME}/.zshrc"
+  source ~/.nvm/nvm.sh
 
   # Check if Node.js is installed using NVM
   if [ -n "$(nvm which current)" ]; then
@@ -202,8 +202,10 @@ install_node() {
 }
 
 install_zsh() {
-  _process"installing zsh and oh-my-zsh"
+  _process "installing zsh and oh-my-zsh"
   brew list zsh || brew install zsh
+
+  chsh -s /opt/homebrew/bin/zsh
 
   if [ -d ~/.oh-my-zsh ]; then
     _process "oh-my-zsh is already installed"
