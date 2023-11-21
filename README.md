@@ -1,7 +1,12 @@
-# that_is_my_shit
-![](https://media.giphy.com/media/QMHoU66sBXqqLqYvGO/giphy.gif)
+# mister-handy
+![](https://media.tenor.com/a3wsnQTcaZwAAAAC/codsworth-fallout.gif)
+
 ## New Mac Setup
-I got tired of setting up my dev environments manually. So this is a WIP project to setup new boxes with my preferred configs.
+I got tired of setting up my dev environments manually.
+
+![](https://media.giphy.com/media/QMHoU66sBXqqLqYvGO/giphy.gif)
+
+So this is a WIP project to setup new boxes with my preferred configs.
 
 ## Credits
 Started from this tutorial:
