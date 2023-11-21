@@ -2,7 +2,7 @@
 #!/usr/bin/env bash
 LOG="${HOME}/Library/Logs/dotfiles.log"
 GITHUB_USER="julesros"
-GITHUB_REPO="that_is_my_shit"
+GITHUB_REPO="mister-handy"
 USER_GIT_AUTHOR_NAME: $USER_GIT_AUTHOR_NAME
 USER_GIT_AUTHOR_EMAIL: $USER_GIT_AUTHOR_EMAIL
 DIR="/opt/${GITHUB_REPO}"
@@ -109,7 +109,7 @@ install_homebrew() {
   _process "→ Installing Homebrew"
   if ! hash brew
   then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     _process "→ Running brew doctor"
     brew doctor
     [[ $? ]] \
