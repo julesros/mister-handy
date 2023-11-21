@@ -130,7 +130,10 @@ install_tap_casks() {
     brew update
     brew upgrade
 
+    # Work utils
     brew list visual-studio-code || brew install --cask visual-studio-code
+    brew list slack || brew install --cask slack
+    brew list iterm2 || brew install --cask iterm2
 
     brew cleanup
 
@@ -181,11 +184,33 @@ install_formulae() {
   fi
 }
 
-# WIP
 install_node() {
-  brew install nvm
-  echo -n 'source $(brew --prefix nvm)/nvm.sh' >> ~/.zshrc
+  brew list nvm || brew install nvm
   source "${HOME}/.zshrc"
+
+  # Check if Node.js is installed using NVM
+  if [ -n "$(nvm which current)" ]; then
+      echo "Node.js is installed using NVM."
+
+      # Print the Node.js version
+      node_version=$(node -v)
+      _process "Node.js version: $node_version"
+  else
+    _process "Node.js is not installed using NVM."
+    nvm install node
+  fi
+}
+
+install_zsh() {
+  _process"installing zsh and oh-my-zsh"
+  brew list zsh || brew install zsh
+
+  if [ -d ~/.oh-my-zsh ]; then
+    _process "oh-my-zsh is already installed"
+  else
+    _process"oh-my-zsh is not installed"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  fi
 }
 
 # /install
@@ -216,13 +241,62 @@ setup_git_authorship() {
   fi
 }
 
+install_dbs() {
+  # Check if Redis is installed
+  if brew ls --versions redis > /dev/null; then
+      _process "Redis is already installed."
+
+      # Check if Redis service is running
+      if brew services list | grep -q "redis"; then
+          _process "Redis service is already running."
+      else
+          _process "Starting Redis service..."
+          brew services run redis
+          _process "Redis service started."
+      fi
+  else
+      _process "Redis is not installed. Installing Redis..."
+      brew install redis
+
+      # Start the Redis service
+      _process "Starting Redis service..."
+      brew services run redis
+      _process "Redis service started."
+  fi
+
+  # Check if PostgreSQL is installed
+  if brew ls --versions postgresql > /dev/null; then
+      echo "PostgreSQL is already installed."
+
+      # Check if PostgreSQL service is running
+      if brew services list | grep -q "postgresql"; then
+          echo "PostgreSQL service is already running."
+      else
+          echo "Starting PostgreSQL service..."
+          brew services run postgresql
+          echo "PostgreSQL service started."
+      fi
+  else
+      echo "PostgreSQL is not installed. Installing PostgreSQL..."
+      brew install postgresql
+
+      # Start the PostgreSQL service
+      echo "Starting PostgreSQL service..."
+      brew services run postgresql
+      echo "PostgreSQL service started."
+  fi
+}
+
 install() {
   install_homebrew
+  install_zsh
   install_tap_casks
   install_formulae
   download_dotfiles
   link_dotfiles
   setup_git_authorship
+  install_node
+  install_dbs
 }
 
 install

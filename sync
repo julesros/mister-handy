@@ -1,14 +1,36 @@
 #!/bin/bash
 
 # Define the source and destination paths
-source_file="/opt/that_is_my_shit/configs/.vimrc"
-destination_file="./configs/.vimrc"
+# source_file="/opt/that_is_my_shit/configs/.vimrc"
+# destination_file="./configs/.vimrc"
 
-# Check if the source file exists
-if [ -e "$source_file" ]; then
-    # Copy the source file to the destination
-    cp "$source_file" "$destination_file"
-    echo "Copied $source_file to $destination_file"
-else
-    echo "Source file $source_file does not exist."
-fi
+# Set variable for list of files
+files="opt/files"
+# Store IFS separator within a temp variable
+OIFS=$IFS
+# Set the separator to a carriage return & a new line break
+# read in passed-in file and store as an array
+IFS=$'\r\n'
+links=($(cat "${files}"))
+
+# Loop through array of files
+for index in ${!links[*]}
+do
+  for link in ${links[$index]}
+  do
+    # set IFS back to space to split string on
+    IFS=$' '
+    # create an array of line items
+    file=(${links[$index]})
+
+
+    # Check if the source file exists
+    if [[ -e "${HOME}/${file[1]}" ]]; then
+      # Copy the source file to the destination
+      cp "${HOME}/${file[1]}" "./${file[0]}"
+    else
+      echo "${HOME}/${file[1]}"
+      echo "./${file[0]}"
+    fi
+  done
+done

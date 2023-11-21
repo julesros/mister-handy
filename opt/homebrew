@@ -13,3 +13,5 @@ awscli
 derailed/k9s/k9s
 postgresql
 redis
+tree
+htop
