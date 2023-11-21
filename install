@@ -109,7 +109,7 @@ install_homebrew() {
   _process "→ Installing Homebrew"
   if ! hash brew
   then
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     _process "→ Running brew doctor"
     brew doctor
     [[ $? ]] \
