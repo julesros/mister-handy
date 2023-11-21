@@ -288,12 +288,12 @@ install_dbs() {
 }
 
 install() {
+  download_dotfiles
+  link_dotfiles
   install_homebrew
   install_zsh
   install_tap_casks
   install_formulae
-  download_dotfiles
-  link_dotfiles
   setup_git_authorship
   install_node
   install_dbs
