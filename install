@@ -146,6 +146,8 @@ install_formulae() {
     _error "Homebrew not found"
   else
     _process "→ Installing Homebrew packages"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
 
     # Set variable for list of homebrew formulaes
     brews="${DIR}/opt/homebrew"
@@ -203,6 +205,7 @@ install_node() {
 
 install_zsh() {
   _process "installing zsh and oh-my-zsh"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
   brew list zsh || brew install zsh
 
   chsh -s /opt/homebrew/bin/zsh
