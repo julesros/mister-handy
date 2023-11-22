@@ -2,3 +2,4 @@ configs/.vimrc        .vimrc
 configs/.zshrc        .zshrc
 configs/.zprofile        .zprofile
 configs/.bashrc        .bashrc
+configs/.bash_profile        .bash_profile

@@ -99,7 +99,7 @@ link_dotfiles() {
     # Reset IFS back
     IFS=$OIFS
 
-    # source "${HOME}/.bash_profile"
+    source "${HOME}/.bash_profile"
 
     [[ $? ]] && _success "All files have been copied"
   fi
